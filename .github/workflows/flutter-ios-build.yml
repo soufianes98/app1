@@ -50,6 +50,7 @@ jobs:
       # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
       - name: Run Flutter Integration Test with Video Recording
         run: |
+          ls -a
           # Boot iOS simulator
           xcrun simctl list devices
           xcrun simctl boot "iPhone 14"
