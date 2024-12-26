@@ -22,6 +22,7 @@ jobs:
           cd ios
           pod init
           pod install
+          cd ..
 
       - name: Build iOS application
         run: flutter build ios --simulator --no-codesign
