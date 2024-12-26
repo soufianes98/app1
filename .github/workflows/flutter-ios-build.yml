@@ -20,6 +20,7 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd ios
+          pod init
           pod deintegrate
           pod cache clean --all
           pod setup
