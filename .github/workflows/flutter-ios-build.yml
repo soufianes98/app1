@@ -21,34 +21,19 @@ jobs:
         run: |
           cd ios
           pod init
-          pod deintegrate
-          pod cache clean --all
-          pod setup
-          pod install --repo-update
+          pod install
           cd ..
 
       - name: Build iOS application
-        run: |
-          flutter build ios --simulator --no-codesign
-          ls -a
-          # Boot iOS simulator
-          xcrun simctl list devices
-          xcrun simctl boot "iPhone 14"
-          # Start screen recording
-          mkdir -p artifacts
-          xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
-          # Run the integration tests
-          flutter test integration_test/my_app_test.dart
-          # Stop screen recording
-          kill $RECORD_PID || true
+        run: flutter build ios --simulator --no-codesign
         #run: flutter build ios --release --no-codesign
         #run: flutter build ios --debug --no-codesign
         #run: flutter build ipa --release --no-codesign
         #run: flutter build ipa --release --no-codesign --obfuscate --split-debug-info=ios/symbols --build-name=0.2.0 --build-number=2
-
+        
       #- name: Build iOS ipa
         #run: xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath build/ios/ipa/Runner.ipa
-
+ 
         # xcodebuild -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build/Runner.ipa
 
       - name: Upload artifact
@@ -61,6 +46,21 @@ jobs:
           #path: build/ios/archive # for command: flutter build ipa --no-codesign
           #path: build/ios/ipa
 
+
+      # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
+      - name: Run Flutter Integration Test with Video Recording
+        run: |
+          # Boot iOS simulator
+          xcrun simctl list devices
+          xcrun simctl boot "iPhone 14"
+          # Start screen recording
+          mkdir -p artifacts
+          xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
+          # Run the integration tests
+          #flutter test integration_test/my_app_test.dart
+          sleep 15
+          # Stop screen recording
+          kill $RECORD_PID || true
 
 
       - name: Upload Test Video
