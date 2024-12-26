@@ -57,7 +57,7 @@ jobs:
           mkdir -p artifacts
           xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
           # Run the integration tests
-          #flutter test integration_test/my_app_test.dart
+          # flutter test integration_test/my_app_test.dart
           sleep 15
           # Stop screen recording
           kill $RECORD_PID || true
