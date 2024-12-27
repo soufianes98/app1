@@ -46,20 +46,38 @@ jobs:
       #     #path: build/ios/archive # for command: flutter build ipa --no-codesign
       #     #path: build/ios/ipa
 
+
+      - name: Create iOS Simulator
+        run: |
+          UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-16-2)
+          echo "SIMULATOR_UDID=$UDID" >> $GITHUB_ENV
+
+      - name: Wait for Simulator to boot
+        run: |
+          until xcrun simctl list devices | grep -q "Booted"; do
+            echo "Waiting for simulator to boot..."
+            sleep 5
+          done
+
+      - name: Boot iOS simulator
+        run: xcrun simctl boot ${{ env.SIMULATOR_UDID }}
+
       # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
       - name: Run Flutter Integration Test with Video Recording
         run: |
-          # Boot iOS simulator
-          xcrun simctl list devices
-          xcrun simctl boot "iPhone 15"
+          # xcrun simctl list devices available
           # Start screen recording
           mkdir -p artifacts
           xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
           # Run the integration tests
-          # flutter test integration_test/app_test.dart -d "iPhone 15"
+          # flutter test integration_test/app_test.dart -d ${{ env.SIMULATOR_UDID }}
           sleep 30
           # Stop screen recording
           kill $RECORD_PID || true
+
+      - name: Shut Down iOS simulator
+        if: always()
+        run: xcrun simctl shutdown ${{ env.SIMULATOR_UDID }}
 
       - name: Upload Test Video
         uses: actions/upload-artifact@v4
