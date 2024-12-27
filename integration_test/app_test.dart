@@ -2,9 +2,7 @@ import 'package:app1/main.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
-// Integration tests should always run in a virtual/physical device
-// flutter test integration_test/my_app_test.dart
+// flutter test integration_test/app_test.dart
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
