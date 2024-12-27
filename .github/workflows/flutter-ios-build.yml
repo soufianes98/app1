@@ -51,13 +51,13 @@ jobs:
         run: |
           # Boot iOS simulator
           xcrun simctl list devices
-          xcrun simctl boot "iPhone 15 Pro Max"
+          xcrun simctl boot "iPhone 15"
           # Start screen recording
           mkdir -p artifacts
           xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
           # Run the integration tests
-          # flutter test integration_test/app_test.dart -d "iPhone 15 Pro Max"
-          sleep 15
+          # flutter test integration_test/app_test.dart -d "iPhone 15"
+          sleep 30
           # Stop screen recording
           kill $RECORD_PID || true
 
