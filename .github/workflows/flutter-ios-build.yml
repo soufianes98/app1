@@ -25,7 +25,7 @@ jobs:
           cd ..
 
       - name: Build iOS application
-        run: echo "hello!" #flutter build ios --simulator --no-codesign
+        run: echo "hello!" # flutter build ios --simulator --no-codesign
         #run: flutter build ios --release --no-codesign
         #run: flutter build ios --debug --no-codesign
         #run: flutter build ipa --release --no-codesign
@@ -36,18 +36,27 @@ jobs:
 
       # xcodebuild -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build/Runner.ipa
 
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: iOS-Build
+      #     path: build/ios/iphonesimulator # flutter build ios --simulator --no-codesign
+      #     #path: build/ios/iphoneos # for command: flutter build ios --release --no-codesign
+      #     #path: build/ios/iphoneos # for command: flutter build ios --debug --no-codesign
+      #     #path: build/ios/archive # for command: flutter build ipa --no-codesign
+      #     #path: build/ios/ipa
 
       # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
       - name: Run Flutter Integration Test with Video Recording
         run: |
           # Boot iOS simulator
           xcrun simctl list devices
-          xcrun simctl boot "iPhone 14"
+          xcrun simctl boot "iPhone 15 Pro Max"
           # Start screen recording
           mkdir -p artifacts
           xcrun simctl io booted recordVideo artifacts/integration-test-video.mp4 & RECORD_PID=$!
           # Run the integration tests
-          # flutter test integration_test/app_test.dart -d "iPhone 14"
+          # flutter test integration_test/app_test.dart -d "iPhone 15 Pro Max"
           sleep 15
           # Stop screen recording
           kill $RECORD_PID || true
