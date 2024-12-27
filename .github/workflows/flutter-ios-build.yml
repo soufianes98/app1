@@ -52,15 +52,15 @@ jobs:
           UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-17-0)
           echo "SIMULATOR_UDID=$UDID" >> $GITHUB_ENV
 
+      - name: Boot iOS simulator
+        run: xcrun simctl boot ${{ env.SIMULATOR_UDID }}
+
       - name: Wait for Simulator to boot
         run: |
           until xcrun simctl list devices | grep -q "Booted"; do
             echo "Waiting for simulator to boot..."
             sleep 5
           done
-
-      - name: Boot iOS simulator
-        run: xcrun simctl boot ${{ env.SIMULATOR_UDID }}
 
       # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
       - name: Run Flutter Integration Test with Video Recording
