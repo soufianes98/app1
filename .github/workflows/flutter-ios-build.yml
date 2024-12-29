@@ -9,9 +9,6 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Install Rosetta
-        run: softwareupdate --install-rosetta --agree-to-license
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -25,10 +22,12 @@ jobs:
           cd ios
           pod init
           pod install
+          ls -a
+          cat Podfile
           cd ..
 
       - name: Build iOS application
-        run: echo "hello!" # flutter build ios --simulator --no-codesign
+        run: flutter build ios --simulator --no-codesign
         #run: flutter build ios --release --no-codesign
         #run: flutter build ios --debug --no-codesign
         #run: flutter build ipa --release --no-codesign
@@ -39,32 +38,31 @@ jobs:
 
       # xcodebuild -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build/Runner.ipa
 
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: iOS-Build
-      #     path: build/ios/iphonesimulator # flutter build ios --simulator --no-codesign
-      #     #path: build/ios/iphoneos # for command: flutter build ios --release --no-codesign
-      #     #path: build/ios/iphoneos # for command: flutter build ios --debug --no-codesign
-      #     #path: build/ios/archive # for command: flutter build ipa --no-codesign
-      #     #path: build/ios/ipa
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iOS-Build
+          path: build/ios/iphonesimulator # flutter build ios --simulator --no-codesign
+          #path: build/ios/iphoneos # for command: flutter build ios --release --no-codesign
+          #path: build/ios/iphoneos # for command: flutter build ios --debug --no-codesign
+          #path: build/ios/archive # for command: flutter build ipa --no-codesign
+          #path: build/ios/ipa
 
 
-      - name: Create iOS Simulator
-        run: |
-          UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-17-0)
-          echo "SIMULATOR_UDID=$UDID" >> $GITHUB_ENV
+      # - name: Create iOS Simulator
+      #   run: |
+      #     UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-17-0)
+      #     echo "SIMULATOR_UDID=$UDID" >> $GITHUB_ENV
 
-      - name: Boot iOS simulator
-        run: xcrun simctl boot ${{ env.SIMULATOR_UDID }}
+      # - name: Boot iOS simulator
+      #   run: xcrun simctl boot ${{ env.SIMULATOR_UDID }}
 
-      - name: Wait for Simulator to boot
-        run: |
-          until xcrun simctl list devices | grep -q "Booted"; do
-            echo "Waiting for simulator to boot..."
-            sleep 5
-          done
-
+      # - name: Wait for Simulator to boot
+      #   run: |
+      #     until xcrun simctl list devices | grep -q "Booted"; do
+      #       echo "Waiting for simulator to boot..."
+      #       sleep 5
+      #     done
       # More: https://chatgpt.com/share/67603bca-97a0-800f-bf71-14f90fd55afb
       - name: Run Flutter Integration Test with Video Recording
         run: |
